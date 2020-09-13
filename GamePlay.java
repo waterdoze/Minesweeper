@@ -43,6 +43,7 @@ public class GamePlay {
 		frame.setVisible(true);
 	}
 	
+	//squares that don't contain mines need a number to indicate how many mines are diagonally/directly adjacent to it
 	void countMinesNearSquare() {
 		for (int i = 0; i < r; i++) {
 			for (int j = 0; j < c; j++) {
@@ -79,6 +80,7 @@ public class GamePlay {
 		}
 	}
 	
+	//spawn an exact amount of mines as suggested in class constructor
 	void generateMines(int m) {
 		for (int i = m; i > 0; i--) {
 			int rowr = (int)(Math.random() * r);
@@ -92,7 +94,7 @@ public class GamePlay {
 			}
 		}
 	}
-	
+	//test the grid
 	void print() {
 		for (int[] i: board) {
 			for (int in: i) {
