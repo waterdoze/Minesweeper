@@ -81,7 +81,7 @@ public class GamePlay {
 							// TODO Auto-generated catch block
 							System.out.println("image not found");
 						}
-						System.out.println(image);
+						
 						Al a = new Al(button, image);
 						button.addActionListener(a);
 						
