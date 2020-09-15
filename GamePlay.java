@@ -41,40 +41,43 @@ public class GamePlay {
 						
 					}
 					case 1:{
-						ImageIcon image = null;
+/*						ImageIcon image = null;
 						try {
 							image = new ImageIcon(new URL("https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Minesweeper_1.svg/480px-Minesweeper_1.svg.png"));
 						} catch (MalformedURLException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						Al a = new Al(button, image);
+						Al a = new Al(button, image);*/
+						Al a= new Al(button, "1");
 						button.addActionListener(a);
 					}
 					case 2:{
-						ImageIcon image = null;
+	/*					ImageIcon image = null;
 						try {
 							image = new ImageIcon(new URL("https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Minesweeper_2.svg/480px-Minesweeper_2.svg.png"));
 						} catch (MalformedURLException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						Al a = new Al(button, image);
+						Al a = new Al(button, image);*/
+						Al a= new Al(button, "2");
 						button.addActionListener(a);
 					}
 					case 3:{
-						ImageIcon image = null;
+				/*		ImageIcon image = null;
 						try {
 							image = new ImageIcon(new URL("https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Minesweeper_3.svg/480px-Minesweeper_3.svg.png"));
 						} catch (MalformedURLException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						Al a = new Al(button, image);
+						Al a = new Al(button, image);*/
+						Al a= new Al(button, "3");
 						button.addActionListener(a);
 					}
 					case 10:{
-						ImageIcon image = null;
+			/*			ImageIcon image = null;
 						try {
 							image = new ImageIcon(new URL("https://giantbomb1.cbsistatic.com/uploads/scale_small/8/87790/3216800-icon_mine.png"));
 						} catch (MalformedURLException e) {
@@ -82,7 +85,8 @@ public class GamePlay {
 							System.out.println("image not found");
 						}
 						
-						Al a = new Al(button, image);
+						Al a = new Al(button, image);*/
+						Al a= new Al(button, "bomb");
 						button.addActionListener(a);
 						
 					}
@@ -173,19 +177,27 @@ public class GamePlay {
 class Al implements ActionListener{
 	JButton button;
 	ImageIcon i;
-
+	String s ="";
 	public Al(JButton b, ImageIcon i) {
 		button = b;
 		this.i=i;
 	}
-
+	public Al(JButton b, String s) {
+		button = b; 
+		this.s=s;
+		i=null;
+	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 			//need a pic of numbers
-		
-			button.setIcon(i);
+			if(i==null) {
+				button.setText(s);
+			}else {
+				button.setIcon(i);
+			}
+			
 			button.removeActionListener(this);
-			System.out.println("asd");
+			System.out.println(s);
 	
 		
 	}
