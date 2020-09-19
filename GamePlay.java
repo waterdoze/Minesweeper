@@ -20,17 +20,18 @@ public class GamePlay {
 	int[][] board;
 	int r, c;
 	JPanel mainpanel;
-	
 	int count;
 	JLabel time;
 	JLabel bomb;
 	int bombCount;
 	Timer timer;
+	
+	Al[][] test;
 	public GamePlay(int mines, int rows, int columns) {
 		r = rows;
 		c = columns;
 		board = new int[rows][columns];
-		
+		test = new Al[rows][columns];
 		
 		generateMines(mines);
 		countMinesNearSquare();
@@ -83,7 +84,7 @@ public class GamePlay {
 				JButton button = new JButton("");
 				switch (board[i][j]) {
 					case 0:{
-						Al a= new Al(button, "0");
+						Al a= new Al(button, "0",i,j);
 						button.addActionListener(a);
 						button.addMouseListener(a);
 						break;
@@ -97,7 +98,7 @@ public class GamePlay {
 							e.printStackTrace();
 						}
 						Al a = new Al(button, image);*/
-						Al a= new Al(button, "1");
+						Al a= new Al(button, "1",i,j);
 						button.addActionListener(a);
 						button.addMouseListener(a);
 						break;
@@ -111,7 +112,7 @@ public class GamePlay {
 							e.printStackTrace();
 						}
 						Al a = new Al(button, image);*/
-						Al a= new Al(button, "2");
+						Al a= new Al(button, "2",i,j);
 						button.addActionListener(a);
 						button.addMouseListener(a);
 						break;
@@ -125,7 +126,7 @@ public class GamePlay {
 							e.printStackTrace();
 						}
 						Al a = new Al(button, image);*/
-						Al a= new Al(button, "3");
+						Al a= new Al(button, "3",i,j);
 						button.addActionListener(a);
 						button.addMouseListener(a);
 						break;
@@ -140,7 +141,7 @@ public class GamePlay {
 						}
 						
 						Al a = new Al(button, image);*/
-						Al a= new Al(button, "bomb");
+						Al a= new Al(button, "bomb",i,j);
 						button.addActionListener(a);
 						button.addMouseListener(a);
 						break;
@@ -153,6 +154,8 @@ public class GamePlay {
 				Al a = new Al(button,image);
 				button.addActionListener(a);	*/			
 			sub2.add(button);
+			Al temp = (Al) button.getActionListeners()[0];
+			test[i][j]=temp;
 			}
 		}
 		sub2.setPreferredSize(new Dimension(800,1000));
@@ -237,6 +240,8 @@ class Al implements ActionListener, MouseListener{
 	JButton button;
 	ImageIcon i;
 	String s ="";
+	int r ;
+	int c;
 	boolean flag= false;
 	public Al(JButton b, ImageIcon i) {
 		button = b;
@@ -247,11 +252,23 @@ class Al implements ActionListener, MouseListener{
 		this.s=s;
 		i=null;
 	}
+	public Al(JButton b, String s,int r, int c) {
+		button = b;
+		this.s=s;
+		this.r=r;
+		this.c=c;
+	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 			//need a pic of numbers
 			if(i==null) {
 				button.setText(s);
+				if(s.equals("bomb")) {
+					//stop the game
+				}
+				if(s.equals("0")) {
+					testThis(r,c);
+				}
 			}
 			else {
 				button.setIcon(i);
@@ -264,7 +281,7 @@ class Al implements ActionListener, MouseListener{
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		if(arg0.getButton()==MouseEvent.BUTTON3) {
-			System.out.println("eft");
+			
 		if(flag) {
 			button.setText("");
 			bomb.setText(Integer.toString(++bombCount));
@@ -282,25 +299,76 @@ class Al implements ActionListener, MouseListener{
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
-	}
+		}
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub	
+	}
+	public void testThis(int r, int c) {
+		
+		if(r>=0&&c>=0&&r<test.length&&c<test.length) {
+			if(board[r][c]==0) {
+				button.setText(s);
+				button.setEnabled(false);
+				board[r][c]=-1;
+			}
+			else if(board[r][c]!=-1){
+				button.setText(s);
+				return;
+			}
+			else{
+				return;
+			}
+			
+			if(r<test.length-1) {
+				test[r+1][c].testThis(r+1, c);
+				if(c>0) {
+					test[r+1][c-1].testThis(r+1, c-1);
+				}
+				if(c<test.length-1) {
+					test[r+1][c+1].testThis(r+1,c+1);
+				}
+				}
+			
+			if(r>0) {
+				test[r-1][c].testThis(r-1,c);
+				if(c>0) {
+					test[r-1][c-1].testThis(r+1, c-1);
+				}
+				if(c<test.length-1) {
+					test[r-1][c+1].testThis(r+1,c+1);
+				}}
+			if(c>0) {
+				test[r][c-1].testThis(r, c-1);
+				if(r>0) {
+					test[r-1][c-1].testThis(r-1,c-1);
+				}
+				if(r<test.length-1) {
+					test[r+1][c-1].testThis(r+1, c-1);
+				}
+			}
+			if(c<test.length-1) {
+				test[r][c+1].testThis(r, c+1);
+				if(r>0) {
+					test[r-1][c+1].testThis(r-1,c-1);
+				}
+				if(r<test.length-1) {
+					test[r+1][c+1].testThis(r+1, c-1);
+				}
+			}
+
+	
+		}
 		
 	}
-	
 }
 }
-
 
