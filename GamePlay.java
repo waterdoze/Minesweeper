@@ -20,6 +20,7 @@ public class GamePlay {
 	
 	int[][] board;
 	int r, c, bombCount, count;
+	JFrame frame;
 	JPanel mainpanel;
 	JLabel time, bomb;
 	Timer timer;
@@ -38,7 +39,7 @@ public class GamePlay {
 		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.Y_AXIS));
 
 		
-		JFrame frame = new JFrame("Minesweeper");
+		frame = new JFrame("Minesweeper");
 		
 		generateMines(mines);
 		countMinesNearSquare();
@@ -78,7 +79,7 @@ public class GamePlay {
 				JButton button = new JButton("");
 				switch (board[i][j]) {
 						case 0: {
-							Al a = new Al(button, "0", i, j);
+							Al a = new Al(button, "", i, j);
 							button.addActionListener(a);
 							button.addMouseListener(a);
 							break;
@@ -257,15 +258,14 @@ public class GamePlay {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// need a pic of numbers
+			// need a picture of numbers
 			if (i == null) {
-				if (!s.equals("0")) {
-					button.setText(s);
-				}
+				button.setText(s);
 				if (s.equals("bomb")) {
 					// stop the game
+					
 				}
-				if (s.equals("0")) {
+				if (s.equals("")) {
 					testThis(r, c);
 				}
 			} else {
@@ -277,17 +277,17 @@ public class GamePlay {
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			// TODO Auto-generated method stub
-			if (arg0.getButton() == MouseEvent.BUTTON3) {
+			if (arg0.getButton() == MouseEvent.BUTTON3 && button.isEnabled()) {
 
 				if (flag) {
 					button.setText("");
+					button.addActionListener(this);
 					bomb.setText(Integer.toString(++bombCount));
-					button.setEnabled(true);
 					flag = false;
 				} else {
 					button.setText("flagged");
+					button.removeActionListener(this);
 					bomb.setText(Integer.toString(--bombCount));
-					button.setEnabled(false);
 					flag = true;
 				}
 			}
@@ -342,10 +342,10 @@ public class GamePlay {
 				if (r > 0) {
 					test[r - 1][c].testThis(r - 1, c);
 					if (c > 0) {
-						test[r - 1][c - 1].testThis(r + 1, c - 1);
+						test[r - 1][c - 1].testThis(r - 1, c - 1);
 					}
 					if (c < test.length - 1) {
-						test[r - 1][c + 1].testThis(r + 1, c + 1);
+						test[r - 1][c + 1].testThis(r - 1, c + 1);
 					}
 				}
 				if (c > 0) {
