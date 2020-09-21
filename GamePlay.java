@@ -43,6 +43,39 @@ public class GamePlay {
 		generateMines(mines);
 		countMinesNearSquare();
 		
+		//switching between difficulty settings
+		JPanel modeDisplay = new JPanel();
+		JButton easy = new JButton("Easy");
+		JButton normal = new JButton("Normal");
+		JButton hard = new JButton("Hard");
+		
+		easy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GamePlay start = new GamePlay(10, 9, 9);
+				start.display();
+				frame.dispose();
+			}
+		});
+		normal.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GamePlay start = new GamePlay(40, 16, 16);
+				start.display();
+				frame.dispose();
+			}
+		});
+		hard.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GamePlay start = new GamePlay(99, 16, 30);
+				start.display();
+				frame.dispose();
+			}
+		});
+		
+		modeDisplay.add(easy);
+		modeDisplay.add(normal);
+		modeDisplay.add(hard);
+		
+		
 		//Top Bomb counter and Timer
 		JPanel timeDisplay = new JPanel();
 		JLabel bombs = new JLabel("Bombs left:");
@@ -158,6 +191,7 @@ public class GamePlay {
 		cellDisplay.setPreferredSize(new Dimension(800, 1000));
 		
 		//Display Everything
+		mainpanel.add(modeDisplay);
 		mainpanel.add(timeDisplay);
 		mainpanel.add(cellDisplay);
 
