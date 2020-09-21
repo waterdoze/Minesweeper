@@ -38,7 +38,6 @@ public class GamePlay {
 		mainpanel = new JPanel();
 		mainpanel.setLayout(new BoxLayout(mainpanel, BoxLayout.Y_AXIS));
 
-		
 		frame = new JFrame("Minesweeper");
 		
 		generateMines(mines);
@@ -161,10 +160,13 @@ public class GamePlay {
 		//Display Everything
 		mainpanel.add(timeDisplay);
 		mainpanel.add(cellDisplay);
+
+	}
+	
+	void display() {
 		frame.add(mainpanel);
 		frame.setSize(800, 800);
 		frame.setVisible(true);
-
 	}
 
 	// squares that don't contain mines need a number to indicate how many mines are
@@ -227,26 +229,21 @@ public class GamePlay {
 			System.out.println();
 		}
 	}
-
+	
+	
 
 	// ActionListener to change icon and disable further presses
 	class Al implements ActionListener, MouseListener {
 		
 		JButton button;
-		ImageIcon i;
 		String s = "";
 		int r, c;
 		boolean flag = false;
-
-		public Al(JButton b, ImageIcon i) {
-			button = b;
-			this.i = i;
-		}
+		
 
 		public Al(JButton b, String s) {
 			button = b;
 			this.s = s;
-			i = null;
 		}
 
 		public Al(JButton b, String s, int r, int c) {
@@ -255,23 +252,48 @@ public class GamePlay {
 			this.r = r;
 			this.c = c;
 		}
-
+		
+		public String getType() {
+			return s;
+		}
+		
+		public JButton getButton() {
+			return button;
+		}
+		
+		public int getRow() {
+			return r;
+		}
+		
+		public int getColumn() {
+			return c;
+		}
+		//Induce end screen
+		void createEndScreen() {
+			for (Al[] row: test) {
+				for (Al cells: row) {
+					if (cells.getType().equals("bomb")) {
+						cells.getButton().setText("bomb");
+						cells.getButton().removeActionListener(cells);
+					}
+					else {
+						cells.getButton().removeActionListener(cells);
+					}
+				}
+			}
+		}
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			// need a picture of numbers
-			if (i == null) {
-				button.setText(s);
-				if (s.equals("bomb")) {
-					// stop the game
-					
-				}
-				if (s.equals("")) {
-					testThis(r, c);
-				}
-			} else {
-				button.setIcon(i);
+			button.setText(s);
+			if (s.equals("bomb")) {
+				createEndScreen();					
+			}
+			if (s.equals("")) {
+				testThis(r, c);
 			}
 			button.setEnabled(false);
+			
 		}
 
 		@Override
@@ -284,7 +306,8 @@ public class GamePlay {
 					button.addActionListener(this);
 					bomb.setText(Integer.toString(++bombCount));
 					flag = false;
-				} else {
+				} 
+				else {
 					button.setText("flagged");
 					button.removeActionListener(this);
 					bomb.setText(Integer.toString(--bombCount));
@@ -321,11 +344,13 @@ public class GamePlay {
 				if (board[r][c] == 0) {
 					button.setEnabled(false);
 					board[r][c] = -1;
-				} else if (board[r][c] != -1) {
+				} 
+				else if (board[r][c] != -1) {
 					button.setText(s);
 					button.setEnabled(false);
 					return;
-				} else {
+				} 
+				else {
 					return;
 				}
 
