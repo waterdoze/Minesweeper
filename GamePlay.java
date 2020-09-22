@@ -327,6 +327,20 @@ public class GamePlay {
 				testThis(r, c);
 			}
 			button.setEnabled(false);
+			board[r][c] = -1;
+			
+			boolean win = true;
+			for (int[] row: board) {
+				for (int number: row) {
+					if (number != 10 && number != -1) {
+						win = false;
+					}
+				}
+			}
+			if (win) {
+				createEndScreen();
+			}
+			
 			
 		}
 
@@ -382,6 +396,7 @@ public class GamePlay {
 				else if (board[r][c] != -1) {
 					button.setText(s);
 					button.setEnabled(false);
+					board[r][c] = -1;
 					return;
 				} 
 				else {
