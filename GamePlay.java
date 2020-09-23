@@ -19,14 +19,16 @@ import javax.swing.Timer;
 public class GamePlay {
 	
 	int[][] board;
-	int r, c, bombCount, count;
+	int r, c, bombCount, count, mines;
 	JFrame frame;
-	JPanel mainpanel;
+	JPanel mainpanel, timeDisplay, cellDisplay;
 	JLabel time, bomb;
 	Timer timer;
 	Al[][] test;
 
 	public GamePlay(int mines, int rows, int columns) {
+		
+		this.mines = mines;
 		r = rows;
 		c = columns;
 		board = new int[rows][columns];
@@ -40,7 +42,6 @@ public class GamePlay {
 
 		frame = new JFrame("Minesweeper");
 		
-		generateMines(mines);
 		countMinesNearSquare();
 		
 		//switching between difficulty settings
@@ -77,7 +78,7 @@ public class GamePlay {
 		
 		
 		//Top Bomb counter and Timer
-		JPanel timeDisplay = new JPanel();
+		timeDisplay = new JPanel();
 		JLabel bombs = new JLabel("Bombs left:");
 		JLabel t = new JLabel("Time:");
 		timeDisplay.add(bombs);
@@ -102,12 +103,53 @@ public class GamePlay {
 		timer.setInitialDelay(1000);
 		timer.start();
 
-		JPanel cellDisplay = new JPanel();
+		cellDisplay = new JPanel();
 		GridLayout layout = new GridLayout(rows, columns);
+		addButtons();
 		cellDisplay.setLayout(layout);
+		cellDisplay.setPreferredSize(new Dimension(800, 1000));
+		
+		//Display Everything
+		mainpanel.add(modeDisplay);
+		mainpanel.add(timeDisplay);
+		mainpanel.add(cellDisplay);
 
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < columns; j++) {
+	}
+	boolean isNear(int ro, int co, int row,int col) {
+		if((ro==row || ro==row+1 || ro == row-1)&&(co==col||co==col+1||co==col-1)) {
+			return true;
+		}
+		return false;
+	}
+	void addButtons() {
+
+		for (int i = 0; i < r; i++) {
+			for (int j = 0; j < c; j++) {
+				JButton button = new JButton("");		
+				int rc=i;
+				int cc=j;
+					button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent arg0) {
+							// TODO Auto-generated method stub
+							generateMines(mines, rc, cc);
+							countMinesNearSquare();
+							cellDisplay.removeAll();
+							board[rc][cc]=0;
+							addRealButtons();
+							test[rc][cc].testThis(rc, cc);
+						}
+					
+					});
+					
+				cellDisplay.add(button);
+
+			}
+		}
+	}
+	void addRealButtons() {
+		for (int i = 0; i < r; i++) {
+			for (int j = 0; j < c; j++) {
 				JButton button = new JButton("");
 				switch (board[i][j]) {
 						case 0: {
@@ -188,18 +230,10 @@ public class GamePlay {
 				test[i][j] = temp;
 			}
 		}
-		cellDisplay.setPreferredSize(new Dimension(800, 1000));
-		
-		//Display Everything
-		mainpanel.add(modeDisplay);
-		mainpanel.add(timeDisplay);
-		mainpanel.add(cellDisplay);
-
 	}
-	
 	void display() {
 		frame.add(mainpanel);
-		frame.setSize(800, 800);
+		frame.setSize(1400, 800);
 		frame.setVisible(true);
 	}
 
@@ -241,11 +275,12 @@ public class GamePlay {
 	}
 
 	// spawn an exact amount of mines as suggested in class constructor
-	void generateMines(int m) {
+	void generateMines(int m,int ro,int co) {
 		for (int i = m; i > 0; i--) {
 			int rowr = (int) (Math.random() * r);
 			int columnr = (int) (Math.random() * c);
-			if (board[rowr][columnr] == 10) {
+			
+			if (board[rowr][columnr] == 10 || isNear(rowr,columnr,ro,co)) {
 				i++;
 				continue;
 			} else {
@@ -253,19 +288,7 @@ public class GamePlay {
 			}
 		}
 	}
-
-	// test the grid
-	void print() {
-		for (int[] i : board) {
-			for (int in : i) {
-				System.out.printf("%4d", in);
-			}
-			System.out.println();
-		}
-	}
 	
-	
-
 	// ActionListener to change icon and disable further presses
 	class Al implements ActionListener, MouseListener {
 		
@@ -274,12 +297,10 @@ public class GamePlay {
 		int r, c;
 		boolean flag = false;
 		
-
 		public Al(JButton b, String s) {
 			button = b;
 			this.s = s;
 		}
-
 		public Al(JButton b, String s, int r, int c) {
 			button = b;
 			this.s = s;
@@ -290,18 +311,16 @@ public class GamePlay {
 		public String getType() {
 			return s;
 		}
-		
 		public JButton getButton() {
 			return button;
 		}
-		
 		public int getRow() {
 			return r;
 		}
-		
 		public int getColumn() {
 			return c;
 		}
+		
 		//Induce end screen
 		void createEndScreen() {
 			for (Al[] row: test) {
@@ -316,6 +335,7 @@ public class GamePlay {
 				}
 			}
 		}
+		
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			// need a picture of numbers
@@ -343,7 +363,6 @@ public class GamePlay {
 			
 			
 		}
-
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			// TODO Auto-generated method stub
@@ -364,22 +383,18 @@ public class GamePlay {
 			}
 
 		}
-
 		@Override
 		public void mouseEntered(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 		}
-
 		@Override
 		public void mouseExited(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 		}
-
 		@Override
 		public void mousePressed(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 		}
-
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
 			// TODO Auto-generated method stub
@@ -387,8 +402,7 @@ public class GamePlay {
 
 		public void testThis(int r, int c) {
 
-			if (r >= 0 && c >= 0 && r < test.length && c < test.length) {
-				
+			if (r >= 0 && c >= 0 && r < test.length && c < test[0].length && board[r][c] != -1) {
 				if (board[r][c] == 0) {
 					button.setEnabled(false);
 					board[r][c] = -1;
@@ -402,23 +416,21 @@ public class GamePlay {
 				else {
 					return;
 				}
-
 				if (r < test.length - 1) {
 					test[r + 1][c].testThis(r + 1, c);
 					if (c > 0) {
 						test[r + 1][c - 1].testThis(r + 1, c - 1);
 					}
-					if (c < test.length - 1) {
+					if (c < test[0].length - 1) {
 						test[r + 1][c + 1].testThis(r + 1, c + 1);
 					}
 				}
-
 				if (r > 0) {
 					test[r - 1][c].testThis(r - 1, c);
 					if (c > 0) {
 						test[r - 1][c - 1].testThis(r - 1, c - 1);
 					}
-					if (c < test.length - 1) {
+					if (c < test[0].length - 1) {
 						test[r - 1][c + 1].testThis(r - 1, c + 1);
 					}
 				}
@@ -431,7 +443,7 @@ public class GamePlay {
 						test[r + 1][c - 1].testThis(r + 1, c - 1);
 					}
 				}
-				if (c < test.length - 1) {
+				if (c < test[0].length - 1) {
 					test[r][c + 1].testThis(r, c + 1);
 					if (r > 0) {
 						test[r - 1][c + 1].testThis(r - 1, c - 1);
