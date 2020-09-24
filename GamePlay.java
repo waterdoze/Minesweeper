@@ -1,4 +1,3 @@
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -96,10 +95,10 @@ public class GamePlay {
 					time.setText(Integer.toString(count));
 				} else {
 					((Timer) (e.getSource())).stop();
+
 				}
 			}
 		});
-		
 		timer.setInitialDelay(1000);
 		timer.start();
 
@@ -113,14 +112,17 @@ public class GamePlay {
 		mainpanel.add(modeDisplay);
 		mainpanel.add(timeDisplay);
 		mainpanel.add(cellDisplay);
+		display();
 
 	}
-	boolean isNear(int ro, int co, int row,int col) {
-		if((ro==row || ro==row+1 || ro == row-1)&&(co==col||co==col+1||co==col-1)) {
-			return true;
-		}
-		return false;
+	//display the frame
+	void display() {
+		frame.add(mainpanel);
+		frame.setSize(1400, 800);
+		frame.setVisible(true);
 	}
+	
+	//add initial buttons of zero
 	void addButtons() {
 
 		for (int i = 0; i < r; i++) {
@@ -147,6 +149,7 @@ public class GamePlay {
 			}
 		}
 	}
+	//generate mines and add buttons with the numbers
 	void addRealButtons() {
 		for (int i = 0; i < r; i++) {
 			for (int j = 0; j < c; j++) {
@@ -231,11 +234,7 @@ public class GamePlay {
 			}
 		}
 	}
-	void display() {
-		frame.add(mainpanel);
-		frame.setSize(1400, 800);
-		frame.setVisible(true);
-	}
+
 
 	// squares that don't contain mines need a number to indicate how many mines are
 	// diagonally/directly adjacent to it
@@ -288,7 +287,10 @@ public class GamePlay {
 			}
 		}
 	}
-	
+	boolean isNear(int ro, int co, int row,int col) {
+		return (ro==row || ro==row+1 || ro == row-1)&&(co==col||co==col+1||co==col-1); 
+		
+	}
 	// ActionListener to change icon and disable further presses
 	class Al implements ActionListener, MouseListener {
 		
@@ -297,10 +299,6 @@ public class GamePlay {
 		int r, c;
 		boolean flag = false;
 		
-		public Al(JButton b, String s) {
-			button = b;
-			this.s = s;
-		}
 		public Al(JButton b, String s, int r, int c) {
 			button = b;
 			this.s = s;
@@ -328,9 +326,11 @@ public class GamePlay {
 					if (cells.getType().equals("bomb")) {
 						cells.getButton().setText("bomb");
 						cells.getButton().removeActionListener(cells);
+						cells.getButton().removeMouseListener(cells);
 					}
 					else {
 						cells.getButton().removeActionListener(cells);
+						cells.getButton().removeMouseListener(cells);
 					}
 				}
 			}
@@ -341,7 +341,8 @@ public class GamePlay {
 			// need a picture of numbers
 			button.setText(s);
 			if (s.equals("bomb")) {
-				createEndScreen();					
+				createEndScreen();		
+				timer.stop();
 			}
 			if (s.equals("")) {
 				testThis(r, c);
