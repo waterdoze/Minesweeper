@@ -1,2 +1,3 @@
 # Minesweeper
-Try to make minesweeper
+Simple Minesweeper Game
+
